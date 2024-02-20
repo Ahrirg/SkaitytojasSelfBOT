@@ -1,10 +1,11 @@
 import discum
 import sys
-import json
 import asyncio
 import os
-bot = discum.Client(token='MTIwOTU1ODYzNDA5OTM4NDM4MA.GBNJXi._jX1jtXDUixPXhr2HTw1QropKBMILDc0Xw4CXw', log=False)
 
+bot = discum.Client(token='MTIwOTU1ODYzNDA5OTM4NDM4MA.GbsIeE.2KoFrktvOm4X8N7P6efI3cDHDEs9FY_-9FyTo0', log=False) #paste into USERTOKEN!!! (how to get, go to some youtube video idk) !!!!!!!!! important !!!!!!!!!!1
+
+print('veik?')
 bot.sendMessage("728579098854817792", "Turning online :3")
 
 dir = os.getcwd()
@@ -55,8 +56,8 @@ async def main(message):
         print(f'[ERRORRAS BUVO]')
 
     fulltext = f'[{AuthorName}]([{AuthorServerName}][{AuthorChannelName}]) {AuthorContent}'
-    IntoPersonText = f'([ServerName={AuthorServerName}][ChannelName={AuthorChannelName}]) {AuthorContent}\n'
-    IntoServerText = f'[{AuthorName}]([ChannelName={AuthorChannelName}]) {AuthorContent}\n'
+    IntoPersonText = f'([ServerId={AuthorServerName}][ChannelId={AuthorChannelName}]) {AuthorContent}\n'
+    IntoServerText = f'[{AuthorName}]([ChannelId={AuthorChannelName}]) {AuthorContent}\n'
 
     await PrintToUser(IntoPersonText, AuthorName)
     await PrintToServer(IntoServerText, AuthorServerid)
@@ -69,7 +70,8 @@ def on_message(resp):
     if resp.event.message:
         message = resp.parsed.auto()
 
-        asyncio.run(main(message))
+        if(message['content'] != ''):
+            asyncio.run(main(message))
 
         
 
