@@ -1,27 +1,25 @@
-import discum
-import sys
+import selfcord
 import asyncio
 import os
+import sys
+from selfcord.ext import commands
 
-bot = discum.Client(token='MTIwOTU1ODYzNDA5OTM4NDM4MA.GbsIeE.2KoFrktvOm4X8N7P6efI3cDHDEs9FY_-9FyTo0', log=False) #paste into USERTOKEN!!! (how to get, go to some youtube video idk) !!!!!!!!! important !!!!!!!!!!1
+CHANNAL_ID = 728579098854817792
+bot = commands.Bot(command_prefix=';;', self_bot=True)
 
-print('veik?')
-bot.sendMessage("728579098854817792", "Turning online :3")
+@bot.event
+async def on_ready():
+    print('Logged in hopefully ok!')
+    channel = bot.get_channel(CHANNAL_ID)
+    await channel.send('Am i ready?')
+
+@bot.command()
+async def ping(ctx):
+    print('radom')
 
 dir = os.getcwd()
 
-@bot.gateway.command
-def on_ready(resp):
-  if resp.event.ready_supplemental: #ready_supplemental is sent onready
-    user = bot.gateway.session.user # parsing the current user
-    username = user['username']
-    yourself = f"{username}"
-    print(f"ready and logged in as {yourself}")
-
-
-
 async def PrintToUser(message, user):
-
     try:
         f = open(dir + '/Users/' + user + '.txt', 'x')
         f.close()
@@ -44,35 +42,33 @@ async def PrintToServer(message, serverid):
     file.write(message)
     file.close()
 
-async def main(message):
-    try:
-        AuthorName = message['author']['username']
-        AuthorChannelName = message['channel_id']
-        AuthorChannelid = message['channel_id']
-        AuthorServerName = message['guild_id']
-        AuthorServerid = message['guild_id']
-        AuthorContent = message['content']
-    except:
-        print(f'[ERRORRAS BUVO]')
+@bot.event
+async def on_message(message):
+    if(message.content != ''):
+        try:
+            AuthorName = message.author.name
+            AuthorChannelName = message.channel.name
+            AuthorChannelid = message.channel.id
+            AuthorServerName = message.guild.name
+            AuthorServerid = message.guild.id
+            AuthorContent = message.content
+            isBot = message.author.bot
+        except:
+            print(f'[ERRORRAS BUVO]')
 
-    fulltext = f'[{AuthorName}]([{AuthorServerName}][{AuthorChannelName}]) {AuthorContent}'
-    IntoPersonText = f'([ServerId={AuthorServerName}][ChannelId={AuthorChannelName}]) {AuthorContent}\n'
-    IntoServerText = f'[{AuthorName}]([ChannelId={AuthorChannelName}]) {AuthorContent}\n'
+        fulltext = f'[{AuthorName}]([{AuthorServerName}][{AuthorChannelName}]) {AuthorContent}'
+        IntoPersonText = f'([{AuthorServerName}][{AuthorChannelName}]) {AuthorContent}\n'
+        IntoServerText = f'[{AuthorName}]([{AuthorChannelName}]) {AuthorContent}\n'
 
-    await PrintToUser(IntoPersonText, AuthorName)
-    await PrintToServer(IntoServerText, AuthorServerid)
-    
-    print(fulltext)
-    sys.stdout.flush()
+        if(AuthorName != 'sofdrg' and isBot == False):
+            await PrintToUser(IntoPersonText, AuthorName)
+            await PrintToServer(IntoServerText, AuthorServerid)
 
-@bot.gateway.command
-def on_message(resp):
-    if resp.event.message:
-        message = resp.parsed.auto()
+            print(fulltext)
+            sys.stdout.flush()
 
-        if(message['content'] != ''):
-            asyncio.run(main(message))
+            channel = bot.get_channel(CHANNAL_ID)
+            await channel.send(f'([{AuthorServerName}][{AuthorChannelName}])\n[{AuthorName}] {AuthorContent}')
 
-        
 
-bot.gateway.run(auto_reconnect=True)
+bot.run('MTIwOTU1ODYzNDA5OTM4NDM4MA.GcgNnM.lIrYbv4yffK-w0i-ahmnxhMOllDImuw5JqwaVo')
